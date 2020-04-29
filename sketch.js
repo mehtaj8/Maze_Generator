@@ -48,6 +48,8 @@ function draw() {
     current = next;
   } else if (stack.length > 0) {
     current = stack.pop();
+  } else {
+    noLoop();
   }
 }
 
