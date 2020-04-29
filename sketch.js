@@ -6,10 +6,7 @@ var grid;
 var current;
 var stack = [];
 
-function setup() {
-  createCanvas(400, 400);
-  cols = floor(width / w);
-  rows = floor(height / w);
+function reset() {
   grid = new Array(cols);
   //frameRate(5);
 
@@ -26,8 +23,16 @@ function setup() {
   current = grid[0][0];
 }
 
+function setup() {
+  createCanvas(400, 400);
+  cols = floor(width / w);
+  rows = floor(height / w);
+  select("#reset").mousePressed(reset);
+  reset();
+}
+
 function draw() {
-  background(50);
+  background(255);
   for (var i = 0; i < rows; i++) {
     for (var j = 0; j < cols; j++) {
       grid[i][j].show();
@@ -62,9 +67,6 @@ function Cell(i, j) {
 
   this.checkNeighbours = function () {
     var neighbours = [];
-
-    console.log(i);
-    console.log(j);
     if (j - 1 >= 0) {
       var top = grid[i][j - 1];
     }
@@ -103,14 +105,14 @@ function Cell(i, j) {
     var x = this.i * w;
     var y = this.j * w;
     noStroke();
-    fill(0, 255, 0, 100);
+    fill(0, 255, 0, 200);
     rect(x, y, w, w);
   };
 
   this.show = function () {
     var x = this.i * w;
     var y = this.j * w;
-    stroke(255);
+    stroke(0);
     if (this.walls[0]) {
       line(x, y, x + w, y);
     }
@@ -126,7 +128,7 @@ function Cell(i, j) {
 
     if (this.visited) {
       noStroke();
-      fill(255, 0, 255, 75);
+      fill(255, 0, 0, 75);
       rect(x, y, w, w);
     }
   };
