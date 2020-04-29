@@ -21,6 +21,7 @@ function reset() {
   }
 
   current = grid[0][0];
+  loop();
 }
 
 function setup() {
