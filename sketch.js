@@ -1,10 +1,12 @@
 var cols;
 var rows;
-var w = 10;
+var w = 35;
 var grid;
 
 var current;
 var stack = [];
+
+var cnv;
 
 function reset() {
   grid = new Array(cols);
@@ -24,8 +26,15 @@ function reset() {
   loop();
 }
 
+function centerElements() {
+  x = (windowWidth - width) / 2;
+  y = (windowHeight - height) / 2;
+  cnv.position(x, y);
+}
+
 function setup() {
-  createCanvas(400, 400);
+  cnv = createCanvas(750, 750);
+  centerElements();
   cols = floor(width / w);
   rows = floor(height / w);
   select("#reset").mousePressed(reset);
@@ -34,8 +43,8 @@ function setup() {
 
 function draw() {
   background(255);
-  for (var i = 0; i < rows; i++) {
-    for (var j = 0; j < cols; j++) {
+  for (var i = 0; i < cols; i++) {
+    for (var j = 0; j < rows; j++) {
       grid[i][j].show();
     }
   }
