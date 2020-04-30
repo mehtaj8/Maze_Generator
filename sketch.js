@@ -30,6 +30,7 @@ function centerElements() {
   x = (windowWidth - width) / 2;
   y = (windowHeight - height) / 2;
   cnv.position(x, y);
+  select("#reset").position(x + width, y);
 }
 
 function setup() {
@@ -115,7 +116,7 @@ function Cell(i, j) {
     var x = this.i * w;
     var y = this.j * w;
     noStroke();
-    fill(0, 255, 0, 200);
+    fill(0, 0, 255, 200);
     rect(x, y, w, w);
   };
 
