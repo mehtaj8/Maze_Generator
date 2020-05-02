@@ -5,8 +5,12 @@ var grid;
 
 var current;
 var stack = [];
+var final;
 
 var cnv;
+var gamePlay = false;
+var gameX = 0;
+var gameY = 0;
 
 function reset() {
   grid = new Array(cols);
@@ -23,6 +27,10 @@ function reset() {
   }
 
   current = grid[0][0];
+  final = grid[cols - 1][rows - 1];
+  gameX = 0;
+  gameY = 0;
+  gamePlay = false;
   loop();
 }
 
@@ -50,6 +58,11 @@ function draw() {
     }
   }
 
+  stroke(0);
+  strokeWeight(3);
+  noFill();
+  rect(0, 0, 735, 735);
+
   current.visited = true;
   current.highlight();
   // STEP 1
@@ -65,6 +78,9 @@ function draw() {
   } else if (stack.length > 0) {
     current = stack.pop();
   } else {
+    final.end();
+    current.start();
+    gamePlay = true;
     noLoop();
   }
 }
@@ -74,7 +90,7 @@ function Cell(i, j) {
   this.j = j;
   // TOP, RIGHT, BOTTOM, LEFT
   this.walls = [true, true, true, true];
-  this, (visited = false);
+  this.visited = false;
 
   this.checkNeighbours = function () {
     var neighbours = [];
@@ -117,13 +133,38 @@ function Cell(i, j) {
     var y = this.j * w;
     noStroke();
     fill(0, 0, 255, 200);
-    rect(x, y, w, w);
+    rect(x + 1, y + 1, w - 2, w - 2);
+  };
+
+  this.start = function () {
+    var x = this.i * w;
+    var y = this.j * w;
+    noStroke();
+    fill(0, 255, 0, 200);
+    rect(x + 1, y + 1, w - 2, w - 2);
+  };
+
+  this.end = function () {
+    var x = this.i * w;
+    var y = this.j * w;
+    noStroke();
+    fill(255, 0, 0);
+    rect(x + 1, y + 1, w - 2, w - 2);
+  };
+
+  this.white = function () {
+    var x = this.i * w;
+    var y = this.j * w;
+    noStroke();
+    fill(255, 255, 255);
+    rect(x + 1, y + 1, w - 2, w - 2);
   };
 
   this.show = function () {
     var x = this.i * w;
     var y = this.j * w;
     stroke(0);
+    strokeWeight(1);
     if (this.walls[0]) {
       line(x, y, x + w, y);
     }
@@ -139,10 +180,42 @@ function Cell(i, j) {
 
     if (this.visited) {
       noStroke();
-      fill(255, 0, 0, 75);
-      rect(x, y, w, w);
     }
   };
+}
+
+function keyPressed() {
+  if (gamePlay) {
+    if (keyCode === UP_ARROW) {
+      console.log("UP");
+      if (grid[gameX][gameY].walls[0] != true) {
+        grid[gameX][gameY].white();
+        gameY -= 1;
+        grid[gameX][gameY].start();
+      }
+    } else if (keyCode === RIGHT_ARROW) {
+      console.log("RIGHT");
+      if (grid[gameX][gameY].walls[1] != true) {
+        grid[gameX][gameY].white();
+        gameX += 1;
+        grid[gameX][gameY].start();
+      }
+    } else if (keyCode === DOWN_ARROW) {
+      console.log("DOWN");
+      if (grid[gameX][gameY].walls[2] != true) {
+        grid[gameX][gameY].white();
+        gameY += 1;
+        grid[gameX][gameY].start();
+      }
+    } else if (keyCode === LEFT_ARROW) {
+      console.log("LEFT");
+      if (grid[gameX][gameY].walls[3] != true) {
+        grid[gameX][gameY].white();
+        gameX -= 1;
+        grid[gameX][gameY].start();
+      }
+    }
+  }
 }
 
 function removeWalls(a, b) {
