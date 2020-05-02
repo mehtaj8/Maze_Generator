@@ -182,6 +182,14 @@ function Cell(i, j) {
     rect(x + 1, y + 1, w - 2, w - 2);
   };
 
+  this.win = function () {
+    var x = this.i * w;
+    var y = this.j * w;
+    noStroke();
+    fill(212, 175, 55);
+    rect(x + 1, y + 1, w - 2, w - 2);
+  };
+
   this.show = function () {
     var x = this.i * w;
     var y = this.j * w;
@@ -256,6 +264,7 @@ function keyPressed() {
       console.log("WIN");
       gamePlay = false;
       document.getElementById("condition").innerHTML = "WINNER!!!";
+      grid[gameX][gameY].win();
     }
   }
 }
