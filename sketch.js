@@ -11,8 +11,14 @@ var cnv;
 var gamePlay = false;
 var gameX = 0;
 var gameY = 0;
+var start = false;
+var generateCond = true;
 
 function reset() {
+  if (generateCond == false) {
+    document.getElementById("condition").innerHTML = "Generating new Maze...";
+  }
+
   grid = new Array(cols);
   //frameRate(5);
 
@@ -31,6 +37,7 @@ function reset() {
   gameX = 0;
   gameY = 0;
   gamePlay = false;
+  generateCond = true;
   loop();
 }
 
@@ -38,7 +45,16 @@ function centerElements() {
   x = (windowWidth - width) / 2;
   y = (windowHeight - height) / 2;
   cnv.position(x, y);
-  select("#reset").position(x + width, y);
+  select("#reset").position(x + width, y + 100);
+  select("#start").position(x + width, y);
+  select("#condition").position(x + width, y + 200);
+}
+
+function generate() {
+  if (generateCond) {
+    start = !start;
+    document.getElementById("condition").innerHTML = "Generating Maze...";
+  }
 }
 
 function setup() {
@@ -47,7 +63,9 @@ function setup() {
   cols = floor(width / w);
   rows = floor(height / w);
   select("#reset").mousePressed(reset);
+  select("#start").mousePressed(generate);
   reset();
+  document.getElementById("condition").innerHTML = "Waiting...";
 }
 
 function draw() {
@@ -63,25 +81,29 @@ function draw() {
   noFill();
   rect(0, 0, 735, 735);
 
-  current.visited = true;
-  current.highlight();
-  // STEP 1
-  var next = current.checkNeighbours();
-  if (next) {
-    next.visited = true;
-    // STEP 2
-    stack.push(current);
-    // STEP 3
-    removeWalls(current, next);
-    // STEP 4
-    current = next;
-  } else if (stack.length > 0) {
-    current = stack.pop();
-  } else {
-    final.end();
-    current.start();
-    gamePlay = true;
-    noLoop();
+  if (start) {
+    current.visited = true;
+    current.highlight();
+    // STEP 1
+    var next = current.checkNeighbours();
+    if (next) {
+      next.visited = true;
+      // STEP 2
+      stack.push(current);
+      // STEP 3
+      removeWalls(current, next);
+      // STEP 4
+      current = next;
+    } else if (stack.length > 0) {
+      current = stack.pop();
+    } else {
+      document.getElementById("condition").innerHTML = "Use Arrow Keys to play";
+      final.end();
+      current.start();
+      gamePlay = true;
+      generateCond = false;
+      noLoop();
+    }
   }
 }
 
@@ -192,6 +214,11 @@ function keyPressed() {
         grid[gameX][gameY].white();
         gameY -= 1;
         grid[gameX][gameY].start();
+        // if (gameX == cols - 1 && gameY == rows - 1) {
+        //   console.log("WIN");
+        //   gamePlay = false;
+        //   document.getElementById("condition").innerHTML = "WINNER!!!";
+        // }
       }
     } else if (keyCode === RIGHT_ARROW) {
       console.log("RIGHT");
@@ -199,6 +226,11 @@ function keyPressed() {
         grid[gameX][gameY].white();
         gameX += 1;
         grid[gameX][gameY].start();
+        // if (gameX == cols - 1 && gameY == rows - 1) {
+        //   console.log("WIN");
+        //   gamePlay = false;
+        //   document.getElementById("condition").innerHTML = "WINNER!!!";
+        // }
       }
     } else if (keyCode === DOWN_ARROW) {
       console.log("DOWN");
@@ -206,6 +238,11 @@ function keyPressed() {
         grid[gameX][gameY].white();
         gameY += 1;
         grid[gameX][gameY].start();
+        // if (gameX == cols - 1 && gameY == rows - 1) {
+        //   console.log("WIN");
+        //   gamePlay = false;
+        //   document.getElementById("condition").innerHTML = "WINNER!!!";
+        // }
       }
     } else if (keyCode === LEFT_ARROW) {
       console.log("LEFT");
@@ -214,6 +251,11 @@ function keyPressed() {
         gameX -= 1;
         grid[gameX][gameY].start();
       }
+    }
+    if (gameX == cols - 1 && gameY == rows - 1) {
+      console.log("WIN");
+      gamePlay = false;
+      document.getElementById("condition").innerHTML = "WINNER!!!";
     }
   }
 }
